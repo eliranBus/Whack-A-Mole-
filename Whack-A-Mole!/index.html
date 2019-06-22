@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Anton|Encode+Sans|Amatic+SC|Expanded|Cardo|Dancing+Script|Cabin+Sketch"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="icon"
+        href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ8IOSKnyswtvwdSfC_ktWgXAZaF6Rk-c6rlYcJn7woIVw18VZ"
+        type="image/gif" sizes="16x16">
+    <title>Whack-A-Mole!</title>
+</head>
+
+<body>
+    <h1>Whack-A-Mole!<span class="score">0</span></h1>
+    <div class="dropdown">
+        <button onclick="myFunction()" id="button" class="dropbtn">Difficulty&nbsp;<i id="icon"
+                class="fas fa-caret-down"></i></button>
+        <div id="myDropdown" class="dropdown-content">
+            <button id="easy">Rookie</button>
+            <br>
+            <button id="hard">Expert</button>
+            <br>
+            <button class="selected" id="veryHard">Legendary</button>
+        </div>
+    </div>
+    <button class="btn" onClick="startGame()">Start!</button>
+
+
+
+    <div class="game">
+        <div class="hole hole1">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole2">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole3">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole4">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole5">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole6">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole7">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole8">
+            <div class="mole"></div>
+        </div>
+        <div class="hole hole9">
+            <div class="mole"></div>
+        </div>
+    </div>
+    </div>
+    <div class="pow"></div>
+    <div class="bonk"></div>
+    <div class="boom"></div>
+    <div class="bam"></div>
+    <footer>
+        <p>Designed & developed by
+            <br><span class="signature">Eliran Buskila - Web Developer. &copy;</span></p>
+    </footer>
+
+    <script>
+        const holes = document.querySelectorAll('.hole');
+        const scoreBoard = document.querySelector('.score');
+        const moles = document.querySelectorAll('.mole');
+        var easyButton = document.querySelector("#easy");
+        var hardButton = document.querySelector("#hard");
+        var veryHardButton = document.querySelector("#veryHard");
+        var game = document.querySelector(".game");
+        var footer = document.querySelector("footer");
+        const pow = document.querySelector(".pow");
+        const bonki = document.querySelector(".bonk");
+        const boom = document.querySelector(".boom");
+        const bam = document.querySelector(".bam");
+
+        let lastHole;
+        let timeUp = false;
+        let score = 0;
+        var funcArr = [showPow, showBonk, showBoom, showBam];
+
+        window.onload = hardHide();
+
+        /* When the user clicks on the difficulty dropdown button, 
+                toggle between hiding and showing the dropdown content */
+        function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        // Close the difficulty dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        function randomTime(min, max) {
+            return Math.round(Math.random() * (max - min) + min);
+        }
+
+        function randomHole(holes) {
+            const idx = Math.floor(Math.random() * holes.length);
+            const hole = holes[idx];
+            if (hole === lastHole) {
+                return randomHole(holes);
+            }
+            lastHole = hole;
+            return hole;
+        }
+
+        function peep() {
+            const time = randomTime(200, 1000);
+            const hole = randomHole(holes);
+            hole.classList.add('up');
+            setTimeout(() => {
+                hole.classList.remove('up');
+                if (!timeUp) peep();
+            }, time);
+        }
+
+        function startGame() {
+            scoreBoard.textContent = 0;
+            timeUp = false;
+            score = 0;
+            peep();
+            setTimeout(() => timeUp = true, 10000)
+        }
+
+        function showPow() {
+            const time = randomTime(700, 800);
+            pow.style.display = "block";
+            setTimeout(() => {
+                pow.style.display = "none";
+                if (timeUp) peep();
+            }, time);
+        }
+
+        function showBonk() {
+            const time = randomTime(700, 750);
+            bonki.style.display = "block";
+            setTimeout(() => {
+                bonki.style.display = "none";
+                if (timeUp) peep();
+            }, time);
+        }
+
+        function showBoom() {
+            const time = randomTime(600, 601);
+            boom.style.display = "block";
+            setTimeout(() => {
+                boom.style.display = "none";
+                if (timeUp) peep();
+            }, time);
+        }
+
+        function showBam() {
+            const time = randomTime(400, 401);
+            bam.style.display = "block";
+            setTimeout(() => {
+                bam.style.display = "none";
+                if (timeUp) peep();
+            }, time);
+        }
+
+        function bonk(e) {
+            if (!e.isTrusted) return;
+            score++;
+            this.parentNode.classList.remove('up');
+            scoreBoard.textContent = score;
+            funcArr[Math.round(Math.random() * funcArr.length)]();
+        }
+        moles.forEach(mole => mole.addEventListener('click', bonk));
+
+
+        function easyHide() {
+            veryHardButton.classList.remove("selected");
+            hardButton.classList.remove("selected");
+            easyButton.classList.add("selected");
+            for (var i = 0; i < holes.length; i++) {
+                holes[0].style.display = "block";
+                holes[1].style.display = "block";
+                holes[2].style.display = "block";
+                holes[3].style.display = "none";
+                holes[4].style.display = "none";
+                holes[5].style.display = "none";
+                holes[6].style.display = "none";
+                holes[7].style.display = "none";
+                holes[8].style.display = "none";
+            }
+            game.style.marginTop = "-154px";
+            game.style.height = "200px";
+            footer.style.marginTop = "160px";
+        }
+
+        function hardHide() {
+            veryHardButton.classList.remove("selected");
+            hardButton.classList.add("selected");
+            easyButton.classList.remove("selected");
+            for (var i = 0; i < holes.length; i++) {
+                holes[0].style.display = "none";
+                holes[1].style.display = "none";
+                holes[2].style.display = "none";
+                holes[3].style.display = "block";
+                holes[4].style.display = "block";
+                holes[5].style.display = "block";
+                holes[6].style.display = "block";
+                holes[7].style.display = "block";
+                holes[8].style.display = "block";
+            }
+            game.style.marginTop = "-136px";
+            game.style.height = "365px";
+            footer.style.marginTop = "100px";
+        }
+
+        function veryHardHide() {
+            veryHardButton.classList.add("selected");
+            hardButton.classList.remove("selected");
+            easyButton.classList.remove("selected");
+            for (var i = 0; i < holes.length; i++) {
+                holes[i].style.display = "block";
+            }
+            game.style.marginTop = "-136.5px";
+            game.style.height = "548px";
+            footer.style.marginTop = "50px";
+        }
+
+        veryHardButton.addEventListener("click", veryHardHide);
+
+        hardButton.addEventListener("click", hardHide);
+
+        easyButton.addEventListener("click", easyHide);
+    </script>
+
+</body>
+
+</html>
